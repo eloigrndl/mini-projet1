@@ -49,7 +49,7 @@ public class KNN {
 	 */
 	public static byte[][][] parseIDXimages(byte[] data) {
 		int nbMagic = extractInt(data[0],data[1],data[2],data[3]);
-		System.out.println(nbMagic);
+		//System.out.println(nbMagic);
 		if (nbMagic!=2051){
 		    return null;
         }else{
@@ -58,19 +58,23 @@ public class KNN {
 		    int largeurImages = extractInt(data[12],data[13],data[15],data[15]);
 
             // tensor = tabImage
+
             byte[][][] tabImages = new  byte[nbImages][hauteurImages][largeurImages];
-            for(int k =0; k<nbImages;++k){
-                for(int j = 0; j<hauteurImages;++j){
-                    for(int i = 16; i< largeurImages; ++i) {
-                        int pNonSigne = data[i] & 0xFF;
-                        int pSigne = pNonSigne - 128;
-                        byte valeurPixel= (byte) pSigne;
-                        tabImages[k][j][i] = valeurPixel;
+            int i = 16;
+            while(i<data.length){
+                for(int k =0; k<nbImages;++k){
+                    for(int j = 0; j<hauteurImages;++j){
+                        for(int l = 16; l< largeurImages; ++l) {
+                            int pNonSigne = data[i] & 0xFF;
+                            int pSigne = pNonSigne - 128;
+                            byte valeurPixel= (byte) pSigne;
+                            tabImages[k][j][l] = valeurPixel;
+                            ++i;
+                        }
                     }
                 }
             }
             return tabImages;
-
         }
 	}
 
