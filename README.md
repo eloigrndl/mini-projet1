@@ -37,3 +37,7 @@ On développe sur des branches parallèles qui quand on les `merge` rejoignent l
 - Push sur Github
 
 `git push -u origin [branch]`
+
+- Pull depuis Github la dernière version
+
+`git pull origin [branch]`
