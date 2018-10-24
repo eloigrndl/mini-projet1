@@ -1,5 +1,7 @@
 package cs107KNN;
 
+import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
+
 public class KNN {
 	public static void main(String[] args) {
 		byte b1 = 40; // 00101000
@@ -11,21 +13,29 @@ public class KNN {
 		int result = extractInt(b1, b2, b3, b4);
 		System.out.println(result);
 
-		String bits = "10000001";
-		System.out.println("La séquence de bits " + bits + "\n\tinterprétée comme byte non signé donne "
-				+ Helpers.interpretUnsigned(bits) + "\n\tinterpretée comme byte signé donne "
-				+ Helpers.interpretSigned(bits));
+//		String bits = "10000001";
+//		System.out.println("La séquence de bits " + bits + "\n\tinterprétée comme byte non signé donne "
+//				+ Helpers.interpretUnsigned(bits) + "\n\tinterpretée comme byte signé donne "
+//				+ Helpers.interpretSigned(bits));
 	}
 
 	/**
 	 * Composes four bytes into an integer using big endian convention.
 	 *
 	 * @param bXToBY The byte containing the bits to store between positions X and Y
-	 * 
+	 *
 	 * @return the integer having form [ b31ToB24 | b23ToB16 | b15ToB8 | b7ToB0 ]
 	 */
 	public static int extractInt(byte b31ToB24, byte b23ToB16, byte b15ToB8, byte b7ToB0) {
-		// TODO: Implémenter
+
+		String bits = Helpers.byteToBinaryString(b31ToB24) + Helpers.byteToBinaryString(b23ToB16) + Helpers.byteToBinaryString(b15ToB8) + Helpers.byteToBinaryString(b7ToB0);
+
+		System.out.println(bits);
+
+		String signedBits = Helpers.interpretSigned(bits);
+
+		//System.out.println(signedBits);
+
 		return 0;
 	}
 
@@ -55,9 +65,9 @@ public class KNN {
 
 	/**
 	 * @brief Computes the squared L2 distance of two images
-	 * 
+	 *
 	 * @param a, b two images of same dimensions
-	 * 
+	 *
 	 * @return the squared euclidean distance between the two images
 	 */
 	public static float squaredEuclideanDistance(byte[][] a, byte[][] b) {
@@ -67,9 +77,9 @@ public class KNN {
 
 	/**
 	 * @brief Computes the inverted similarity between 2 images.
-	 * 
+	 *
 	 * @param a, b two images of same dimensions
-	 * 
+	 *
 	 * @return the inverted similarity between the two images
 	 */
 	public static float invertedSimilarity(byte[][] a, byte[][] b) {
@@ -79,12 +89,12 @@ public class KNN {
 
 	/**
 	 * @brief Quicksorts and returns the new indices of each value.
-	 * 
+	 *
 	 * @param values the values whose indices have to be sorted in non decreasing
 	 *               order
-	 * 
+	 *
 	 * @return the array of sorted indices
-	 * 
+	 *
 	 *         Example: values = quicksortIndices([3, 7, 0, 9]) gives [2, 0, 1, 3]
 	 */
 	public static int[] quicksortIndices(float[] values) {
@@ -95,7 +105,7 @@ public class KNN {
 	/**
 	 * @brief Sorts the provided values between two indices while applying the same
 	 *        transformations to the array of indices
-	 * 
+	 *
 	 * @param values  the values to sort
 	 * @param indices the indices to sort according to the corresponding values
 	 * @param         low, high are the **inclusive** bounds of the portion of array
@@ -107,7 +117,7 @@ public class KNN {
 
 	/**
 	 * @brief Swaps the elements of the given arrays at the provided positions
-	 * 
+	 *
 	 * @param         i, j the indices of the elements to swap
 	 * @param values  the array floats whose values are to be swapped
 	 * @param indices the array of ints whose values are to be swapped
@@ -118,9 +128,9 @@ public class KNN {
 
 	/**
 	 * @brief Returns the index of the largest element in the array
-	 * 
+	 *
 	 * @param array an array of integers
-	 * 
+	 *
 	 * @return the index of the largest integer
 	 */
 	public static int indexOfMax(int[] array) {
@@ -159,10 +169,10 @@ public class KNN {
 
 	/**
 	 * Computes accuracy between two arrays of predictions
-	 * 
+	 *
 	 * @param predictedLabels the array of labels predicted by the algorithm
 	 * @param trueLabels      the array of true labels
-	 * 
+	 *
 	 * @return the accuracy of the predictions. Its value is in [0, 1]
 	 */
 	public static double accuracy(byte[] predictedLabels, byte[] trueLabels) {
