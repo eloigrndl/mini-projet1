@@ -27,7 +27,7 @@ On développe sur des branches parallèles qui quand on les `merge` rejoignent l
 `git checkout [nom de la branche]`
 
 - Ajouter le code au commit en cours
-Kwjxgvbs
+
 `git add .`
 
 - Créer un nouveau commit
