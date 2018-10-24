@@ -22,7 +22,7 @@ public class KNN {
 	/**
 	 * Composes four bytes into an integer using big endian convention.
 	 *
-	 * @param bXToBY The byte containing the bits to store between positions X and Y
+	 * @param "bXToBY" The byte containing the bits to store between positions X and Y
 	 *
 	 * @return the integer having form [ b31ToB24 | b23ToB16 | b15ToB8 | b7ToB0 ]
 	 */
@@ -48,8 +48,30 @@ public class KNN {
 	 * @return A tensor of images
 	 */
 	public static byte[][][] parseIDXimages(byte[] data) {
-		// TODO: Implémenter
-		return null;
+		int nbMagic = extractInt(data[0],data[1],data[2],data[3]);
+		System.out.println(nbMagic);
+		if (nbMagic!=2051){
+		    return null;
+        }else{
+		    int nbImages = extractInt(data[4],data[5],data[6],data[7]);
+		    int hauteurImages = extractInt(data[8],data[9],data[10],data[11]);
+		    int largeurImages = extractInt(data[12],data[13],data[15],data[15]);
+
+            // tensor = tabImage
+            byte[][][] tabImages = new  byte[nbImages][hauteurImages][largeurImages];
+            for(int k =0; k<nbImages;++k){
+                for(int j = 0; j<hauteurImages;++j){
+                    for(int i = 16; i< largeurImages; ++i) {
+                        int pNonSigne = data[i] & 0xFF;
+                        int pSigne = pNonSigne - 128;
+                        byte valeurPixel= (byte) pSigne;
+                        tabImages[k][j][i] = valeurPixel;
+                    }
+                }
+            }
+            return tabImages;
+
+        }
 	}
 
 	/**
