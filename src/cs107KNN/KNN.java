@@ -30,14 +30,14 @@ public class KNN {
 
 		String bits = Helpers.byteToBinaryString(b31ToB24) + Helpers.byteToBinaryString(b23ToB16) + Helpers.byteToBinaryString(b15ToB8) + Helpers.byteToBinaryString(b7ToB0);
 		
-		int a = 0;
+		int sum = 0;
 		for (int i= bits.length()-1; i>=0;--i){
 			int puissance = bits.length()-i-1;
 			int valBinaire = (int)bits.charAt(i) - 48;
-			a+=valBinaire*(Math.pow(2,puissance));
+			sum+=valBinaire*(Math.pow(2,puissance));
 
 		}
-		return a;
+		return sum;
 	}
 
 	/**
