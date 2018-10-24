@@ -29,14 +29,15 @@ public class KNN {
 	public static int extractInt(byte b31ToB24, byte b23ToB16, byte b15ToB8, byte b7ToB0) {
 
 		String bits = Helpers.byteToBinaryString(b31ToB24) + Helpers.byteToBinaryString(b23ToB16) + Helpers.byteToBinaryString(b15ToB8) + Helpers.byteToBinaryString(b7ToB0);
+		
+		int a = 0;
+		for (int i= bits.length()-1; i>=0;--i){
+			int puissance = bits.length()-i-1;
+			int valBinaire = (int)bits.charAt(i) - 48;
+			a+=valBinaire*(Math.pow(2,puissance));
 
-		System.out.println(bits);
-
-		String signedBits = Helpers.interpretSigned(bits);
-
-		//System.out.println(signedBits);
-
-		return 0;
+		}
+		return a;
 	}
 
 	/**
