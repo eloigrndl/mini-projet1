@@ -41,3 +41,5 @@ On développe sur des branches parallèles qui quand on les `merge` rejoignent l
 - Pull depuis Github la dernière version
 
 `git pull origin [branch]`
+
+-bite
