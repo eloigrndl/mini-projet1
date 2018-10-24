@@ -42,4 +42,3 @@ On développe sur des branches parallèles qui quand on les `merge` rejoignent l
 
 `git pull origin [branch]`
 
--bite
