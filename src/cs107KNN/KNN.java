@@ -66,30 +66,33 @@ public class KNN {
 		//System.out.println(nbMagic);
 		if (nbMagic!=2051){
 		    return null;
-        }else{
-		    int nbImages = extractInt(data[4],data[5],data[6],data[7]);
-		    int hauteurImages = extractInt(data[8],data[9],data[10],data[11]);
-		    int largeurImages = extractInt(data[12],data[13],data[15],data[15]);
+        }
 
-            // tensor = tabImage
+        int nbImages = extractInt(data[4],data[5],data[6],data[7]);
+        int hauteurImages = extractInt(data[8],data[9],data[10],data[11]);
+        int largeurImages = extractInt(data[12],data[13],data[15],data[15]);
 
-            byte[][][] tabImages = new  byte[nbImages][hauteurImages][largeurImages];
-            int i = 16;
-            while(i<data.length){
-                for(int k =0; k<nbImages;++k){
-                    for(int j = 0; j<hauteurImages;++j){
-                        for(int l = 16; l< largeurImages; ++l) {
-                            int pNonSigne = data[i] & 0xFF;
-                            int pSigne = pNonSigne - 128;
-                            byte valeurPixel= (byte) pSigne;
-                            tabImages[k][j][l] = valeurPixel;
-                            ++i;
-                        }
+        // tensor = tabImage
+
+        byte[][][] tabImages = new byte[nbImages][hauteurImages][largeurImages];
+        //int i = 16;
+        System.out.println("nb images" + nbImages);
+        //while(i<nbImages){
+        for(int i=16; i<16+nbImages; ++i) {
+            for(int k =0; k<nbImages;++k){
+                for(int j = 0; j<hauteurImages;++j){
+                    for(int l = 16; l< largeurImages; ++l) {
+                        //System.out.println(i);
+                        int pNonSigne = data[i] & 0xFF;
+                        int pSigne = pNonSigne - 128;
+                        byte valeurPixel= (byte) pSigne;
+                        tabImages[k][j][l] = valeurPixel;
+                        //++i;
                     }
                 }
             }
-            return tabImages;
         }
+        return tabImages;
 	}
 
 	/**
