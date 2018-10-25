@@ -4,19 +4,33 @@ import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
 
 public class KNN {
 	public static void main(String[] args) {
-		byte b1 = 40; // 00101000
-		byte b2 = 20; // 00010100
-		byte b3 = 10; // 00001010
-		byte b4 = 5; // 00000101
+		//byte b1 = 40; // 00101000
+		//byte b2 = 20; // 00010100
+		//byte b3 = 10; // 00001010
+		//byte b4 = 5; // 00000101
 
 		// [00101000 | 00010100 | 00001010 | 00000101] = 672401925
-		int result = extractInt(b1, b2, b3, b4);
-		System.out.println(result);
+		//int result = extractInt(b1, b2, b3, b4);
+		//System.out.println(result);
 
-//		String bits = "10000001";
-//		System.out.println("La séquence de bits " + bits + "\n\tinterprétée comme byte non signé donne "
-//				+ Helpers.interpretUnsigned(bits) + "\n\tinterpretée comme byte signé donne "
-//				+ Helpers.interpretSigned(bits));
+        //Exemple de lecture du dataset IDX
+        // Charge les étiquettes depuis le disque
+        byte[] labelsRaw = Helpers.readBinaryFile("datasets/10-per-digit_labels_train");
+        // Parse les étiquettes
+        byte[] labelsTrain = parseIDXlabels(labelsRaw);
+        // Affiche le nombre de labels
+        System.out.println(labelsTrain.length);
+        // Affiche le premier label
+        System.out.println(labelsTrain[0]);
+
+        // Charge les images depuis le disque
+        byte[] imagesRaw = Helpers.readBinaryFile("datasets/10-per-digit_images_train");
+        // Parse les images
+        byte[][][] imagesTrain = parseIDXimages(imagesRaw);
+        // Affiche les dimensions des images
+        System.out.println("Number of images : " + imagesTrain.length); System.out.println("height : " + imagesTrain[0].length); System.out.println("width : " + imagesTrain[0][0].length);
+        // Affiche les 30 premières images et leurs étiquettes
+        Helpers.show("Test", imagesTrain, labelsTrain, 2, 15);
 	}
 
 	/**
@@ -86,8 +100,26 @@ public class KNN {
 	 * @return the parsed labels
 	 */
 	public static byte[] parseIDXlabels(byte[] data) {
-		// TODO: Implémenter
-		return null;
+		int nombreMagique = extractInt(data[0], data[1], data[2], data[3]);
+
+		if (nombreMagique != 2049) {
+		    return null;
+        }
+
+        int nombreEtiquettes = extractInt(data[4], data[5], data[6], data[7]);
+
+		byte[] etiquettes = new byte[nombreEtiquettes];
+        for (int i=8; i<8+nombreEtiquettes; ++i) {
+            byte unsignedEtiquette = data[i];
+//            String unsignedEtiquetteString = Helpers.byteToBinaryString(unsignedEtiquette);
+//            String signedEtiquetteString = Helpers.interpretSigned(unsignedEtiquetteString);
+
+            byte signedEtiquette = (byte) ((unsignedEtiquette & 0xFF) - 128);
+
+            etiquettes[i-8] = signedEtiquette;
+        }
+
+		return etiquettes;
 	}
 
 	/**
