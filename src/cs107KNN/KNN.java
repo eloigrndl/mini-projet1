@@ -13,24 +13,24 @@ public class KNN {
 		//int result = extractInt(b1, b2, b3, b4);
 		//System.out.println(result);
 
-        //Exemple de lecture du dataset IDX
-        // Charge les étiquettes depuis le disque
-        byte[] labelsRaw = Helpers.readBinaryFile("datasets/10-per-digit_labels_train");
-        // Parse les étiquettes
-        byte[] labelsTrain = parseIDXlabels(labelsRaw);
-        // Affiche le nombre de labels
-        System.out.println(labelsTrain.length);
-        // Affiche le premier label
-        System.out.println(labelsTrain[0]);
-
-        // Charge les images depuis le disque
-        byte[] imagesRaw = Helpers.readBinaryFile("datasets/10-per-digit_images_train");
-        // Parse les images
-        byte[][][] imagesTrain = parseIDXimages(imagesRaw);
-        // Affiche les dimensions des images
-        System.out.println("Number of images : " + imagesTrain.length); System.out.println("height : " + imagesTrain[0].length); System.out.println("width : " + imagesTrain[0][0].length);
-        // Affiche les 30 premières images et leurs étiquettes
-        Helpers.show("Test", imagesTrain, labelsTrain, 2, 15);
+//        //Exemple de lecture du dataset IDX
+//        // Charge les étiquettes depuis le disque
+//        byte[] labelsRaw = Helpers.readBinaryFile("datasets/10-per-digit_labels_train");
+//        // Parse les étiquettes
+//        byte[] labelsTrain = parseIDXlabels(labelsRaw);
+//        // Affiche le nombre de labels
+//        System.out.println(labelsTrain.length);
+//        // Affiche le premier label
+//        System.out.println(labelsTrain[0]);
+//
+//        // Charge les images depuis le disque
+//        byte[] imagesRaw = Helpers.readBinaryFile("datasets/10-per-digit_images_train");
+//        // Parse les images
+//        byte[][][] imagesTrain = parseIDXimages(imagesRaw);
+//        // Affiche les dimensions des images
+//        System.out.println("Number of images : " + imagesTrain.length); System.out.println("height : " + imagesTrain[0].length); System.out.println("width : " + imagesTrain[0][0].length);
+//        // Affiche les 30 premières images et leurs étiquettes
+//        Helpers.show("Test", imagesTrain, labelsTrain, 2, 15);
 	}
 
 	/**
@@ -62,37 +62,8 @@ public class KNN {
 	 * @return A tensor of images
 	 */
 	public static byte[][][] parseIDXimages(byte[] data) {
-		int nbMagic = extractInt(data[0],data[1],data[2],data[3]);
-		//System.out.println(nbMagic);
-		if (nbMagic!=2051){
-		    return null;
-        }
-
-        int nbImages = extractInt(data[4],data[5],data[6],data[7]);
-        int hauteurImages = extractInt(data[8],data[9],data[10],data[11]);
-        int largeurImages = extractInt(data[12],data[13],data[15],data[15]);
-
-        // tensor = tabImage
-
-        byte[][][] tabImages = new byte[nbImages][hauteurImages][largeurImages];
-        //int i = 16;
-        System.out.println("nb images" + nbImages);
-        //while(i<nbImages){
-        for(int i=16; i<16+nbImages; ++i) {
-            for(int k =0; k<nbImages;++k){
-                for(int j = 0; j<hauteurImages;++j){
-                    for(int l = 16; l< largeurImages; ++l) {
-                        //System.out.println(i);
-                        int pNonSigne = data[i] & 0xFF;
-                        int pSigne = pNonSigne - 128;
-                        byte valeurPixel= (byte) pSigne;
-                        tabImages[k][j][l] = valeurPixel;
-                        //++i;
-                    }
-                }
-            }
-        }
-        return tabImages;
+		
+        return null;
 	}
 
 	/**
@@ -133,8 +104,28 @@ public class KNN {
 	 * @return the squared euclidean distance between the two images
 	 */
 	public static float squaredEuclideanDistance(byte[][] a, byte[][] b) {
-		// TODO: Implémenter
-		return 0f;
+
+		//On vérifie qu'on a des tenseurs équivalents
+		if (a.length != b.length && a[0].length != b[0].length) {
+			return 0;
+		}
+
+		int hauteur = a.length; //nombre de lignes
+		int largeur = a[0].length; //nombre de colonnes
+
+		float e = 0;
+
+		for (int i=0; i<hauteur; ++i) {
+			for (int j=0; j<largeur; ++j) {
+
+				float aij = a[i][j];
+				float bij = b[i][j];
+
+				e += Math.pow((aij - bij), 2);
+			}
+		}
+
+		return e;
 	}
 
 	/**
