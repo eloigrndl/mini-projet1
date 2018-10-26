@@ -2,6 +2,8 @@ package cs107KNN;
 
 import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
+
 public class KNN {
 	public static void main(String[] args) {
 		//byte b1 = 40; // 00101000
@@ -12,25 +14,25 @@ public class KNN {
 		// [00101000 | 00010100 | 00001010 | 00000101] = 672401925
 		//int result = extractInt(b1, b2, b3, b4);
 		//System.out.println(result);
+		
+		//Exemple de lecture du dataset IDX
+		// Charge les étiquettes depuis le disque
+		byte[] labelsRaw = Helpers.readBinaryFile("datasets/10-per-digit_labels_train");
+		// Parse les étiquettes
+		byte[] labelsTrain = parseIDXlabels(labelsRaw);
+		// Affiche le nombre de labels
+		System.out.println("Number of labels : " + labelsTrain.length);
+		// Affiche le premier label
+		System.out.println("First label : " +labelsTrain[0]);
 
-        //Exemple de lecture du dataset IDX
-        // Charge les étiquettes depuis le disque
-        byte[] labelsRaw = Helpers.readBinaryFile("datasets/10-per-digit_labels_train");
-        // Parse les étiquettes
-        byte[] labelsTrain = parseIDXlabels(labelsRaw);
-        // Affiche le nombre de labels
-        System.out.println(labelsTrain.length);
-        // Affiche le premier label
-        System.out.println(labelsTrain[0]);
-
-        // Charge les images depuis le disque
-        byte[] imagesRaw = Helpers.readBinaryFile("datasets/10-per-digit_images_train");
-        // Parse les images
-        byte[][][] imagesTrain = parseIDXimages(imagesRaw);
-        // Affiche les dimensions des images
-        System.out.println("Number of images : " + imagesTrain.length); System.out.println("height : " + imagesTrain[0].length); System.out.println("width : " + imagesTrain[0][0].length);
-        // Affiche les 30 premières images et leurs étiquettes
-        Helpers.show("Test", imagesTrain, labelsTrain, 2, 15);
+		// Charge les images depuis le disque
+		byte[] imagesRaw = Helpers.readBinaryFile("datasets/10-per-digit_images_train");
+		// Parse les images
+		byte[][][] imagesTrain = parseIDXimages(imagesRaw);
+		// Affiche les dimensions des images
+		System.out.println("Number of images : " + imagesTrain.length); System.out.println("Height : " + imagesTrain[0].length); System.out.println("Width : " + imagesTrain[0][0].length);
+		// Affiche les 30 premières images et leurs étiquettes
+		Helpers.show("Test", imagesTrain, labelsTrain, 2, 15);
 	}
 
 	/**
@@ -113,12 +115,9 @@ public class KNN {
 		byte[] etiquettes = new byte[nombreEtiquettes];
         for (int i=8; i<8+nombreEtiquettes; ++i) {
             byte unsignedEtiquette = data[i];
-//            String unsignedEtiquetteString = Helpers.byteToBinaryString(unsignedEtiquette);
-//            String signedEtiquetteString = Helpers.interpretSigned(unsignedEtiquetteString);
+            byte intEtiquette = (byte) ((unsignedEtiquette & 0xFF));
 
-            byte signedEtiquette = (byte) ((unsignedEtiquette & 0xFF) - 128);
-
-            etiquettes[i-8] = signedEtiquette;
+            etiquettes[i-8] = intEtiquette;
         }
 
 		return etiquettes;
@@ -133,7 +132,7 @@ public class KNN {
 	 */
 	public static float squaredEuclideanDistance(byte[][] a, byte[][] b) {
 
-		//On vérifie qu'on a des tenseurs équivalents
+		//On vérifie qu'on a des tenseurs de dimensions équivalentes
 		if (a.length != b.length && a[0].length != b[0].length) {
 			return 0;
 		}
@@ -164,8 +163,62 @@ public class KNN {
 	 * @return the inverted similarity between the two images
 	 */
 	public static float invertedSimilarity(byte[][] a, byte[][] b) {
-		// TODO: Implémenter
-		return 0f;
+		//On vérifie qu'on a des tenseurs équivalents
+		if (a.length != b.length && a[0].length != b[0].length) {
+			return 0;
+		}
+
+		int hauteur = a.length;
+		int largeur = a[0].length;
+
+		//Calcul du numérateur
+		float numerateur = 0;
+		for (int i = 0; i < hauteur-1; ++i){
+			for (int j = 0; j < largeur - 1; ++j){
+				numerateur += (a[i][j] - calculValeurMoyenne(a))*(b[i][j] - calculValeurMoyenne(b));
+			}
+		}
+		//Calcul du premier membre du dénominateur
+		float membre1 = 0;
+		for (int i =0;i<hauteur-1;++i){
+			for (int j = 0;j<largeur - 1;++j){
+				membre1 += (a[i][j] - calculValeurMoyenne(a))*(a[i][j] - calculValeurMoyenne(a));
+			}
+		}
+		//Calcul du deuxième membre du dénominateur
+
+		float membre2 = 0;
+		for (int i =0;i<hauteur-1;++i){
+			for (int j = 0;j<largeur - 1;++j){
+				membre2 += (b[i][j] - calculValeurMoyenne(b))*(b[i][j] - calculValeurMoyenne(b));
+			}
+		}
+		float denominateur = (float) Math.sqrt((membre1*membre2));
+
+		if(denominateur==0){
+			denominateur = (float) 2.0;
+		}
+
+		//Calcul final Similarité inversée
+		float SI = 1-(numerateur/denominateur);
+
+		return SI;
+	}
+	// méthode pour la valeur moyenne
+	public static double calculValeurMoyenne(byte[][] a){
+
+		double valMoyenne = 0;
+		double  hauteur = a.length;
+		double largeur = a[0].length;
+		for(int i =0; i<hauteur-1;++i){
+			for(int j = 0; j<largeur-1;++j){
+				valMoyenne +=a[i][j];
+			}
+		}
+		valMoyenne= valMoyenne/(hauteur*largeur);
+
+
+		return valMoyenne;
 	}
 
 	/**
@@ -179,8 +232,18 @@ public class KNN {
 	 *         Example: values = quicksortIndices([3, 7, 0, 9]) gives [2, 0, 1, 3]
 	 */
 	public static int[] quicksortIndices(float[] values) {
-		// TODO: Implémenter
-		return null;
+		//ex: values = {3, 7, 0, 9};
+		//indices = {0, 1, 2, 3};
+
+		int[] indices = new int[values.length];
+
+		for (int i=0; i<values.length; ++i) {
+			indices[i] = i;
+		}
+
+		quicksortIndices(values, indices, 0, (values.length-1));
+
+		return indices;
 	}
 
 	/**
@@ -193,7 +256,31 @@ public class KNN {
 	 *                to sort
 	 */
 	public static void quicksortIndices(float[] values, int[] indices, int low, int high) {
-		// TODO: Implémenter
+
+		int l = low;
+		int h = high;
+		int pivot = (int) values[low];
+
+		while (l <= h) {
+			if (values[l] < pivot) {
+				++l;
+			} else if (values[h] > pivot) {
+				--h;
+			} else {
+				swap(l, h, values, indices);
+				++l;
+				--h;
+			}
+		}
+
+		if (low < h) {
+			quicksortIndices(values, indices, low, h);
+		}
+
+		if (high > l) {
+			quicksortIndices(values, indices, l, high);
+		}
+
 	}
 
 	/**
@@ -204,7 +291,18 @@ public class KNN {
 	 * @param indices the array of ints whose values are to be swapped
 	 */
 	public static void swap(int i, int j, float[] values, int[] indices) {
-		// TODO: Implémenter
+
+		//values[i][j] => values[j][i]
+		//indices[i][j] => indices[j][i]
+
+		float valuesTemp = values[i];
+		values[i] = values[j];
+		values[j] = valuesTemp;
+
+		int indicesTemp = indices[i];
+		indices[i] = indices[j];
+		indices[j] = indicesTemp;
+
 	}
 
 	/**
