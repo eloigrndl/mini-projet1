@@ -14,7 +14,7 @@ public class KNN {
 		// [00101000 | 00010100 | 00001010 | 00000101] = 672401925
 		//int result = extractInt(b1, b2, b3, b4);
 		//System.out.println(result);
-		
+        KNNTest.electLabelTest();
 		//Exemple de lecture du dataset IDX
 		// Charge les étiquettes depuis le disque
 		byte[] labelsRaw = Helpers.readBinaryFile("datasets/10-per-digit_labels_train");
@@ -313,8 +313,13 @@ public class KNN {
 	 * @return the index of the largest integer
 	 */
 	public static int indexOfMax(int[] array) {
-		// TODO: Implémenter
-		return 0;
+	    int k = 0;
+		for(int i = 0; i<array.length;++i){
+		    if(k<array[i]){
+		        k=i;
+            }
+        }
+		return k;
 	}
 
 	/**
@@ -327,8 +332,41 @@ public class KNN {
 	 * @return the winner of the election
 	 */
 	public static byte electLabel(int[] sortedIndices, byte[] labels, int k) {
-		// TODO: Implémenter
-		return 0;
+	    //On vérifie que l'indice k est inférieur ou égal à la taille du tableau d'indices
+        if(k>sortedIndices.length){
+            return 0; //Est-ce que peut retourner ca si c'est faux ?
+        }
+        //Processus de votes (j'ai mis un switch : ca fonctionne mais ya mieux ?)
+
+	    int[] tab = new int[10];
+        for(int i = 0;i<k;++i){
+            int j = labels[sortedIndices[i]];
+            switch(j)
+            {
+                case 0 : tab[0]+=1;
+                break;
+                case 1 : tab[1]+=1;
+                    break;
+                case 2 : tab[2]+=1;
+                    break;
+                case 3 : tab[3]+=1;
+                    break;
+                case 4 : tab[4]+=1;
+                    break;
+                case 5 : tab[5]+=1;
+                    break;
+                case 6 : tab[6]+=1;
+                    break;
+                case 7 : tab[7]+=1;
+                    break;
+                case 8 : tab[8]+=1;
+                    break;
+                case 9 : tab[9]+=1;
+                    break;
+            }
+        }
+        byte winnerOfElection = (byte) indexOfMax(tab);
+        return winnerOfElection;
 	}
 
 	/**
@@ -342,7 +380,8 @@ public class KNN {
 	 * @return the label of the image
 	 */
 	public static byte knnClassify(byte[][] image, byte[][][] trainImages, byte[] trainLabels, int k) {
-		// TODO: Implémenter
+
+
 		return 0;
 	}
 
