@@ -341,29 +341,7 @@ public class KNN {
 	    int[] tab = new int[10];
         for(int i = 0;i<k;++i){
             int j = labels[sortedIndices[i]];
-            switch(j)
-            {
-                case 0 : tab[0]+=1;
-                break;
-                case 1 : tab[1]+=1;
-                    break;
-                case 2 : tab[2]+=1;
-                    break;
-                case 3 : tab[3]+=1;
-                    break;
-                case 4 : tab[4]+=1;
-                    break;
-                case 5 : tab[5]+=1;
-                    break;
-                case 6 : tab[6]+=1;
-                    break;
-                case 7 : tab[7]+=1;
-                    break;
-                case 8 : tab[8]+=1;
-                    break;
-                case 9 : tab[9]+=1;
-                    break;
-            }
+            tab[j]+=1;
         }
         byte winnerOfElection = (byte) indexOfMax(tab);
         return winnerOfElection;
