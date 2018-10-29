@@ -6,33 +6,22 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
 public class KNN {
 	public static void main(String[] args) {
-		//byte b1 = 40; // 00101000
-		//byte b2 = 20; // 00010100
-		//byte b3 = 10; // 00001010
-		//byte b4 = 5; // 00000101
 
-		// [00101000 | 00010100 | 00001010 | 00000101] = 672401925
-		//int result = extractInt(b1, b2, b3, b4);
-		//System.out.println(result);
-        KNNTest.electLabelTest();
-		//Exemple de lecture du dataset IDX
-		// Charge les étiquettes depuis le disque
-		byte[] labelsRaw = Helpers.readBinaryFile("datasets/10-per-digit_labels_train");
-		// Parse les étiquettes
-		byte[] labelsTrain = parseIDXlabels(labelsRaw);
-		// Affiche le nombre de labels
-		System.out.println("Number of labels : " + labelsTrain.length);
-		// Affiche le premier label
-		System.out.println("First label : " +labelsTrain[0]);
+		int TESTS = 700;
+		int K = 5;
 
-		// Charge les images depuis le disque
-		byte[] imagesRaw = Helpers.readBinaryFile("datasets/10-per-digit_images_train");
-		// Parse les images
-		byte[][][] imagesTrain = parseIDXimages(imagesRaw);
-		// Affiche les dimensions des images
-		System.out.println("Number of images : " + imagesTrain.length); System.out.println("Height : " + imagesTrain[0].length); System.out.println("Width : " + imagesTrain[0][0].length);
-		// Affiche les 30 premières images et leurs étiquettes
-		Helpers.show("Test", imagesTrain, labelsTrain, 2, 15);
+		byte[][][] trainImages = parseIDXimages(Helpers.readBinaryFile("datasets/100-per-digit_images_train"));
+		byte[] trainLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/100-per-digit_labels_train"));
+
+		byte[][][] testImages = parseIDXimages(Helpers.readBinaryFile("datasets/10k_images_test"));
+		byte[] testLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/10k_labels_test"));
+
+		byte[] predictions = new byte[TESTS];
+		for (int i = 0; i < TESTS; i++) {
+			predictions[i] = knnClassify(testImages[i], trainImages, trainLabels, K);
+		}
+
+		Helpers.show("Test", testImages, predictions, testLabels, 20, 35) ;
 	}
 
 	/**
@@ -336,7 +325,6 @@ public class KNN {
         if(k>sortedIndices.length){
             return 0; //Est-ce que peut retourner ca si c'est faux ?
         }
-        //Processus de votes (j'ai mis un switch : ca fonctionne mais ya mieux ?)
 
 	    int[] tab = new int[10];
         for(int i = 0;i<k;++i){
@@ -359,8 +347,13 @@ public class KNN {
 	 */
 	public static byte knnClassify(byte[][] image, byte[][][] trainImages, byte[] trainLabels, int k) {
 
+		float[] distances = new float[trainImages.length];
 
-		return 0;
+		for (int i=0; i<trainImages.length; ++i) {
+			distances[i] = invertedSimilarity(image, trainImages[i]);
+		}
+
+		return electLabel(quicksortIndices(distances), trainLabels, k);
 	}
 
 	/**
