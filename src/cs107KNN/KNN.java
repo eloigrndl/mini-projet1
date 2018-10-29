@@ -365,7 +365,18 @@ public class KNN {
 	 * @return the accuracy of the predictions. Its value is in [0, 1]
 	 */
 	public static double accuracy(byte[] predictedLabels, byte[] trueLabels) {
-		// TODO: Implémenter
-		return 0d;
+		//on vérifie que les tableaux ne sont pas vides et qu'ils ont la même taille
+		/*if((predictedLabels.length!= trueLabels.length)||(predictedLabels.length = 0)||(trueLabels.length=0)){
+            return 0;
+        }*/
+		//on calcule la précision
+		double accuracy = 0;
+		for(int i = 0; i<trueLabels.length;++i){
+			if(predictedLabels[i]==trueLabels[i]){
+				accuracy+=1;
+			}
+		}
+		accuracy/=trueLabels.length;
+		return accuracy;
 	}
 }
