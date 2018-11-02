@@ -1,5 +1,7 @@
 package cs107KNN;
 
+import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
+
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Random;
@@ -10,20 +12,21 @@ public class KMeansClustering {
 		int K = 5000;
 		int maxIters = 20;
 
-		// TODO: Adaptez les parcours
-		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("TODO_remplacer/1000-per-digit_images_train"));
-		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("TODO_remplacer/1000-per-digit_labels_train"));
+		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/1000-per-digit_images_train"));
+		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/1000-per-digit_labels_train"));
 
-		byte[][][] reducedImages = KMeansReduce(images, K, maxIters);
+//		byte[][][] reducedImages = KMeansReduce(images, K, maxIters);
+//
+//		byte[] reducedLabels = new byte[reducedImages.length];
+//		for (int i = 0; i < reducedLabels.length; i++) {
+//			reducedLabels[i] = KNN.knnClassify(reducedImages[i], images, labels, 5);
+//			System.out.println("Classified " + (i + 1) + " / " + reducedImages.length);
+//		}
+//
+//		Helpers.writeBinaryFile("datasets/reduced10Kto1K_images", encodeIDXimages(reducedImages));
+//		Helpers.writeBinaryFile("datasets/reduced10Kto1K_labels", encodeIDXlabels(reducedLabels));
 
-		byte[] reducedLabels = new byte[reducedImages.length];
-		for (int i = 0; i < reducedLabels.length; i++) {
-			reducedLabels[i] = KNN.knnClassify(reducedImages[i], images, labels, 5);
-			System.out.println("Classified " + (i + 1) + " / " + reducedImages.length);
-		}
-
-		Helpers.writeBinaryFile("datasets/reduced10Kto1K_images", encodeIDXimages(reducedImages));
-		Helpers.writeBinaryFile("datasets/reduced10Kto1K_labels", encodeIDXlabels(reducedLabels));
+		encodeIDXimages(images);
 	}
 
     /**
@@ -34,7 +37,8 @@ public class KMeansClustering {
      * @return the array of byte ready to be written to an IDX file
      */
 	public static byte[] encodeIDXimages(byte[][][] images) {
-		// TODO: Implémenter
+		int length = images.length;
+
 		return null;
 	}
 

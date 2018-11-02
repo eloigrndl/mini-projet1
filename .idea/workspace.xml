@@ -2,6 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f9be270a-606f-44da-a1bd-6656196619ed" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/cs107KNN/KMeansClustering.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/cs107KNN/KMeansClustering.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/cs107KNN/KNN.class" beforeDir="false" afterPath="$PROJECT_DIR$/bin/cs107KNN/KNN.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knn.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/knn.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cs107KNN/KMeansClustering.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/cs107KNN/KMeansClustering.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cs107KNN/KNN.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/cs107KNN/KNN.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
@@ -15,32 +20,36 @@
     <session id="477988300">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
-          <entry key="project.open.time.11" value="1" />
+          <entry key="project.closed" value="9" />
+          <entry key="project.open.time.10" value="2" />
+          <entry key="project.open.time.11" value="2" />
           <entry key="project.open.time.12" value="1" />
+          <entry key="project.open.time.14" value="1" />
           <entry key="project.open.time.6" value="1" />
+          <entry key="project.open.time.7" value="1" />
           <entry key="project.open.time.8" value="1" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.open.time.9" value="2" />
+          <entry key="project.opened" value="11" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="java" value="5" />
+          <entry key="java" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="JAVA" value="5" />
+          <entry key="JAVA" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="4916" />
+          <entry key="java" value="6030" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="4916" />
+          <entry key="JAVA" value="6030" />
         </counts>
       </usages-collector>
     </session>
@@ -113,13 +122,52 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/cs107KNN/KNN.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="353" column="9" selection-start-line="353" selection-start-column="9" selection-end-line="353" selection-end-column="9" />
+            <state relative-caret-position="457">
+              <caret line="39" column="5" lean-forward="true" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/cs107KNN/KNNTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2373">
+              <caret line="113" column="27" selection-start-line="113" selection-start-column="27" selection-end-line="113" selection-end-column="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/cs107KNN/KMeansClustering.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1029">
+              <caret line="54" column="5" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/cs107KNN/Helpers.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1302">
+              <caret line="79" column="26" selection-start-line="79" selection-start-column="26" selection-end-line="79" selection-end-column="26" />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>accuracy</find>
+      <find>Helpers</find>
+      <find>quickSort</find>
+      <find>invertedS</find>
+      <find>inverted</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -134,6 +182,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/src/cs107KNN/KMeansClustering.java" />
         <option value="$PROJECT_DIR$/src/cs107KNN/KNN.java" />
       </list>
     </option>
@@ -144,9 +193,10 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds">
+    <option name="y" value="23" />
     <option name="width" value="1440" />
-    <option name="height" value="900" />
+    <option name="height" value="834" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -154,6 +204,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -167,17 +218,27 @@
               <item name="mini-projet1-cs107" type="462c0819:PsiDirectoryNode" />
               <item name="datasets" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="mini-projet1-cs107" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mini-projet1-cs107" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mini-projet1-cs107" type="b2602c69:ProjectViewProjectNode" />
+              <item name="mini-projet1-cs107" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="cs107KNN" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1540735697026" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1541174915750" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -195,9 +256,23 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.KNN">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="KMeansClustering" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="cs107KNN.KMeansClustering" />
+      <module name="mini-projet1-cs107" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cs107KNN.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -245,9 +320,14 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="Application.KNN" />
+      <item itemvalue="Application.KMeansClustering" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.KNN" />
+        <item itemvalue="Application.KMeansClustering" />
       </list>
     </recent_temporary>
   </component>
@@ -275,11 +355,18 @@
       <workItem from="1540641034000" duration="203000" />
       <workItem from="1540720965366" duration="364000" />
       <workItem from="1540734803261" duration="928000" />
+      <workItem from="1540799570839" duration="381000" />
+      <workItem from="1540823135195" duration="1706000" />
+      <workItem from="1540987208737" duration="777000" />
+      <workItem from="1541087215535" duration="1802000" />
+      <workItem from="1541159006386" duration="230000" />
+      <workItem from="1541160643799" duration="2063000" />
+      <workItem from="1541170583445" duration="874000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25957000" />
+    <option name="totallyTimeSpent" value="33790000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -291,9 +378,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <frame x="0" y="23" width="1440" height="834" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49937734" visible="true" weight="0.27896994" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49937734" visible="true" weight="0.1695279" />
       <window_info id="Structure" order="1" sideWeight="0.5006227" side_tool="true" weight="0.18884121" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -302,16 +389,16 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.25552824" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.18319559" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32876712" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3288835" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3278237" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" weight="0.3362391" />
       <window_info anchor="bottom" id="Version Control" order="10" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.25" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.24849094" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.24964234" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -341,31 +428,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cs107KNN/Helpers.java">
+    <entry file="file://$PROJECT_DIR$/src/cs107KNN/KNN.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4494">
-          <caret line="233" selection-start-line="233" selection-end-line="233" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cs107KNN/KMeansClustering.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        <state relative-caret-position="457">
+          <caret line="39" column="5" lean-forward="true" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/cs107KNN/KNNTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1785">
-          <caret line="85" selection-start-line="85" selection-end-line="85" />
+        <state relative-caret-position="2373">
+          <caret line="113" column="27" selection-start-line="113" selection-start-column="27" selection-end-line="113" selection-end-column="27" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cs107KNN/KNN.java">
+    <entry file="file://$PROJECT_DIR$/src/cs107KNN/KMeansClustering.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="353" column="9" selection-start-line="353" selection-start-column="9" selection-end-line="353" selection-end-column="9" />
+        <state relative-caret-position="1029">
+          <caret line="54" column="5" selection-start-line="54" selection-start-column="5" selection-end-line="54" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cs107KNN/Helpers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1302">
+          <caret line="79" column="26" selection-start-line="79" selection-start-column="26" selection-end-line="79" selection-end-column="26" />
         </state>
       </provider>
     </entry>

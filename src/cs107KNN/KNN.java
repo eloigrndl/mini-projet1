@@ -4,24 +4,39 @@ import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
+import java.util.Arrays;
+
 public class KNN {
 	public static void main(String[] args) {
 
-		int TESTS = 700;
-		int K = 5;
+		int TESTS = 100;
+		int K = 10;
 
-		byte[][][] trainImages = parseIDXimages(Helpers.readBinaryFile("datasets/100-per-digit_images_train"));
-		byte[] trainLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/100-per-digit_labels_train"));
+		byte[][][] trainImages = parseIDXimages(Helpers.readBinaryFile("datasets/5000-per-digit_images_train"));
+		byte[] trainLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/5000-per-digit_labels_train"));
 
 		byte[][][] testImages = parseIDXimages(Helpers.readBinaryFile("datasets/10k_images_test"));
 		byte[] testLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/10k_labels_test"));
 
+//		byte[] predictions = new byte[TESTS];
+//		for (int i = 0; i < TESTS; i++) {
+//			predictions[i] = knnClassify(testImages[i], trainImages, trainLabels, K);
+//		}
+
+		//KNNTest.quicksortTest();
+
 		byte[] predictions = new byte[TESTS];
+		long start = System.currentTimeMillis();
 		for (int i = 0; i < TESTS; i++) {
 			predictions[i] = knnClassify(testImages[i], trainImages, trainLabels, K);
 		}
+		long end = System.currentTimeMillis();
+		double time = (end - start) / 1000d;
+		System.out.println("Accuracy = " + accuracy(predictions, Arrays.copyOfRange(testLabels, 0, TESTS))*100 + " %");
+		System.out.println("Time = " + time + " seconds");
+		System.out.println("Time per test image = " + (time / TESTS));
 
-		Helpers.show("Test", testImages, predictions, testLabels, 20, 35) ;
+		Helpers.show("Test", testImages, predictions, testLabels, 10, 10) ;
 	}
 
 	/**
@@ -162,24 +177,16 @@ public class KNN {
 
 		//Calcul du numérateur
 		float numerateur = 0;
+		float membre1 = 0;
+		float membre2 = 0;
+
+		double[] valMoyenne = calculValeurMoyenne(a, b);
+
 		for (int i = 0; i < hauteur-1; ++i){
 			for (int j = 0; j < largeur - 1; ++j){
-				numerateur += (a[i][j] - calculValeurMoyenne(a))*(b[i][j] - calculValeurMoyenne(b));
-			}
-		}
-		//Calcul du premier membre du dénominateur
-		float membre1 = 0;
-		for (int i =0;i<hauteur-1;++i){
-			for (int j = 0;j<largeur - 1;++j){
-				membre1 += (a[i][j] - calculValeurMoyenne(a))*(a[i][j] - calculValeurMoyenne(a));
-			}
-		}
-		//Calcul du deuxième membre du dénominateur
-
-		float membre2 = 0;
-		for (int i =0;i<hauteur-1;++i){
-			for (int j = 0;j<largeur - 1;++j){
-				membre2 += (b[i][j] - calculValeurMoyenne(b))*(b[i][j] - calculValeurMoyenne(b));
+				numerateur += (a[i][j] - valMoyenne[0])*(b[i][j] - valMoyenne[1]);
+				membre1 += (a[i][j] - valMoyenne[0])*(a[i][j] - valMoyenne[0]);
+				membre2 += (b[i][j] - valMoyenne[1])*(b[i][j] - valMoyenne[1]);
 			}
 		}
 		float denominateur = (float) Math.sqrt((membre1*membre2));
@@ -189,25 +196,26 @@ public class KNN {
 		}
 
 		//Calcul final Similarité inversée
-		float SI = 1-(numerateur/denominateur);
-
-		return SI;
+		return 1-(numerateur/denominateur);
 	}
 	// méthode pour la valeur moyenne
-	public static double calculValeurMoyenne(byte[][] a){
+	public static double[] calculValeurMoyenne(byte[][] a, byte[][]b){
 
-		double valMoyenne = 0;
+		double valMoyenneA = 0;
+		double valMoyenneB = 0;
 		double  hauteur = a.length;
 		double largeur = a[0].length;
 		for(int i =0; i<hauteur-1;++i){
 			for(int j = 0; j<largeur-1;++j){
-				valMoyenne +=a[i][j];
+				valMoyenneA +=a[i][j];
+				valMoyenneB +=b[i][j];
 			}
 		}
-		valMoyenne= valMoyenne/(hauteur*largeur);
+		valMoyenneA = valMoyenneA/(hauteur*largeur);
+		valMoyenneB = valMoyenneB/(hauteur*largeur);
 
 
-		return valMoyenne;
+		return new double[] {valMoyenneA, valMoyenneB};
 	}
 
 	/**
@@ -248,7 +256,7 @@ public class KNN {
 
 		int l = low;
 		int h = high;
-		int pivot = (int) values[low];
+		float pivot = values[low];
 
 		while (l <= h) {
 			if (values[l] < pivot) {
