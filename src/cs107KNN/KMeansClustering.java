@@ -1,19 +1,16 @@
 package cs107KNN;
 
-import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
+//import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.ArrayList;
+import java.util.*;
 
 public class KMeansClustering {
 	public static void main(String[] args) {
 		int K = 5000;
 		int maxIters = 20;
 
-		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/1000-per-digit_images_train"));
-		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/1000-per-digit_labels_train"));
+		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/10-per-digit_images_train"));
+		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/10-per-digit_labels_train"));
 
 //		byte[][][] reducedImages = KMeansReduce(images, K, maxIters);
 //
@@ -25,7 +22,10 @@ public class KMeansClustering {
 //
 //		Helpers.writeBinaryFile("datasets/reduced10Kto1K_images", encodeIDXimages(reducedImages));
 //		Helpers.writeBinaryFile("datasets/reduced10Kto1K_labels", encodeIDXlabels(reducedLabels));
+		//byte[] bytes = new byte[4];
+		//encodeInt(2049,bytes,0);
 
+		encodeIDXlabels(labels);
 		encodeIDXimages(images);
 	}
 
@@ -37,9 +37,33 @@ public class KMeansClustering {
      * @return the array of byte ready to be written to an IDX file
      */
 	public static byte[] encodeIDXimages(byte[][][] images) {
-		int length = images.length;
 
-		return null;
+		//images structure:
+		// 0-3 : magic number 2051
+		// 4-7 : number of images
+		// 8-11 : height of images
+		// 12-15 : width of images
+		// 16-... : image by image, line by line, column by column
+
+		byte[] encodedImages = new byte[images.length + 16];
+		int currentByte = 16;
+
+		encodeInt(2051, encodedImages, 0);
+		encodeInt(images.length, encodedImages, 4);
+		encodeInt(images[0].length, encodedImages, 8);
+		encodeInt(images[0][0].length, encodedImages, 12);
+
+		for (int k = 0; k < images.length; ++k) {
+			for (int j = 0; j < images[0].length; ++j) {
+				for (int l = 0; l < images[0][0].length; ++l) {
+					//tabImages[k][j][l] = signedImages[k*largeurImages*hauteurImages+j*largeurImages+l];
+					byte unsignedByte = images[k][j][l];
+					encodedImages[currentByte] = (byte) ((unsignedByte & 0xFF) - 128);
+				}
+			}
+		}
+
+		return encodedImages;
 	}
 
     /**
@@ -50,8 +74,24 @@ public class KMeansClustering {
      * @return the array of bytes ready to be written to an IDX file
      */
 	public static byte[] encodeIDXlabels(byte[] labels) {
-		// TODO: Implémenter
-		return null;
+
+		//labels structure :
+		// 0-3 : magic number 2049
+		// 4-7 : number of labels
+		// 8-... : labels
+
+		byte[] encodedLabels = new byte[labels.length + 8];
+
+		encodeInt(2049,encodedLabels,0);
+		encodeInt(labels.length, encodedLabels, 4);
+
+		for (int i=8; i<labels.length+8; ++i) {
+			byte unsignedByte = labels[i-8];
+			byte signedByte = (byte) ((unsignedByte & 0xFF) - 128);
+			encodedLabels[i] = signedByte;
+		}
+
+		return encodedLabels;
 	}
 
     /**
@@ -64,7 +104,26 @@ public class KMeansClustering {
      * the others will follow at offset + 1, offset + 2, offset + 3
      */
 	public static void encodeInt(int n, byte[] destination, int offset) {
-		// TODO: Implémenter
+
+		String integerByte = Integer.toBinaryString(n);
+		if(integerByte.length()!=32){
+			int nbAAjouter = 32 - integerByte.length();
+			for (int i = 0; i<nbAAjouter; ++i){
+				integerByte ='0' + integerByte;
+			}
+		}
+
+		for (int j = 0; j<4;++j) {
+			String byte8 = "";
+
+			for (int i = 0; i < 8; ++i) {
+				byte8 = byte8 + integerByte.charAt(j * 8 + i);
+			}
+
+			destination[offset+j] = Helpers.binaryStringToByte(byte8);
+
+		}
+
 	}
 
     /**

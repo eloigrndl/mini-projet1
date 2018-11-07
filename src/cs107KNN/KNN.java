@@ -1,6 +1,6 @@
 package cs107KNN;
 
-import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
+//import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
@@ -9,21 +9,14 @@ import java.util.Arrays;
 public class KNN {
 	public static void main(String[] args) {
 
-		int TESTS = 100;
-		int K = 10;
+		int TESTS = 1000;
+		int K = 7;
 
-		byte[][][] trainImages = parseIDXimages(Helpers.readBinaryFile("datasets/5000-per-digit_images_train"));
-		byte[] trainLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/5000-per-digit_labels_train"));
+		byte[][][] trainImages = parseIDXimages(Helpers.readBinaryFile("datasets/100-per-digit_images_train"));
+		byte[] trainLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/100-per-digit_labels_train"));
 
 		byte[][][] testImages = parseIDXimages(Helpers.readBinaryFile("datasets/10k_images_test"));
 		byte[] testLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/10k_labels_test"));
-
-//		byte[] predictions = new byte[TESTS];
-//		for (int i = 0; i < TESTS; i++) {
-//			predictions[i] = knnClassify(testImages[i], trainImages, trainLabels, K);
-//		}
-
-		//KNNTest.quicksortTest();
 
 		byte[] predictions = new byte[TESTS];
 		long start = System.currentTimeMillis();
@@ -135,11 +128,6 @@ public class KNN {
 	 * @return the squared euclidean distance between the two images
 	 */
 	public static float squaredEuclideanDistance(byte[][] a, byte[][] b) {
-
-		//On vérifie qu'on a des tenseurs de dimensions équivalentes
-		if (a.length != b.length && a[0].length != b[0].length) {
-			return 0;
-		}
 
 		int hauteur = a.length; //nombre de lignes
 		int largeur = a[0].length; //nombre de colonnes
@@ -358,7 +346,7 @@ public class KNN {
 		float[] distances = new float[trainImages.length];
 
 		for (int i=0; i<trainImages.length; ++i) {
-			distances[i] = invertedSimilarity(image, trainImages[i]);
+			distances[i] = squaredEuclideanDistance(image, trainImages[i]);
 		}
 
 		return electLabel(quicksortIndices(distances), trainLabels, k);
