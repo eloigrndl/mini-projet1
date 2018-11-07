@@ -12,7 +12,7 @@ public class KMeansClustering {
 		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/100-per-digit_images_train"));
 		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/100-per-digit_labels_train"));
 
-//		byte[][][] reducedImages = KMeansReduce(images, K, maxIters);
+		byte[][][] reducedImages = KMeansReduce(images, K, maxIters);
 //
 //		byte[] reducedLabels = new byte[reducedImages.length];
 //		for (int i = 0; i < reducedLabels.length; i++) {
@@ -22,11 +22,6 @@ public class KMeansClustering {
 //
 //		Helpers.writeBinaryFile("datasets/reduced10Kto1K_images", encodeIDXimages(reducedImages));
 //		Helpers.writeBinaryFile("datasets/reduced10Kto1K_labels", encodeIDXlabels(reducedLabels));
-		//byte[] bytes = new byte[4];
-		//encodeInt(2049,bytes,0);
-
-		encodeIDXlabels(labels);
-		encodeIDXimages(images);
 	}
 
     /**
@@ -155,18 +150,23 @@ public class KMeansClustering {
      * @return the tensor containing the reduced dataset
      */
 	public static byte[][][] KMeansReduce(byte[][][] tensor, int size, int maxIters) {
+
+		System.out.println("Starting KMeansReduce");
+
 		int[] assignments = new Random().ints(tensor.length, 0, size).toArray();
 		byte[][][] centroids = new byte[size][][];
 		initialize(tensor, assignments, centroids);
 
 		int nIter = 0;
 		while (nIter < maxIters) {
+
+			System.out.println("Itering - Current : " + nIter);
 			// Step 1: Assign points to closest centroid
 			recomputeAssignments(tensor, centroids, assignments);
 			System.out.println("Recomputed assignments");
 			// Step 2: Recompute centroids as average of points
-			recomputeCentroids(tensor, centroids, assignments);
-			System.out.println("Recomputed centroids");
+			//recomputeCentroids(tensor, centroids, assignments);
+			//System.out.println("Recomputed centroids");
 
 			System.out.println("KMeans completed iteration " + (nIter + 1) + " / " + maxIters);
 
@@ -186,6 +186,30 @@ public class KMeansClustering {
      *  if j is at position i, then image i belongs to cluster j
      */
 	public static void recomputeAssignments(byte[][][] tensor, byte[][][] centroids, int[] assignments) {
+
+		//chaque image appartient au cluster le plus proche (euclidean distance)
+
+		for (int i=0; i<tensor.length; ++i) {
+			byte[][] currentImage = tensor[i];
+
+			float smallestDistance = KNN.squaredEuclideanDistance(currentImage, centroids[0]);
+			int currentCentroid = 0;
+			//Compare current image to all the centroids
+			for (int j=1; j<centroids.length; ++j) {
+
+				float distance = KNN.squaredEuclideanDistance(currentImage, centroids[j]);
+				if (distance < smallestDistance) {
+					//We found a smaller Euclidean distance
+					smallestDistance = distance;
+					currentCentroid = j;
+				}
+
+				assignments[i] = currentCentroid;
+
+			}
+
+		}
+
 	}
 
     /**
@@ -210,6 +234,9 @@ public class KMeansClustering {
      *  if j is at position i, then image i belongs to cluster j
      */
 	public static void initialize(byte[][][] tensor, int[] assignments, byte[][][] centroids) {
+
+		System.out.println("Initialising...");
+
 		Set<Integer> centroidIds = new HashSet<>();
 		Random r = new Random("cs107-2018".hashCode());
 		while (centroidIds.size() != centroids.length)
@@ -219,5 +246,7 @@ public class KMeansClustering {
 			centroids[i] = tensor[cids[i]];
 		for (int i = 0; i < assignments.length; i++)
 			assignments[i] = cids[r.nextInt(cids.length)];
+
+		System.out.println("Initialised.");
 	}
 }
