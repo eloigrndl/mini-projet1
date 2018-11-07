@@ -9,8 +9,8 @@ public class KMeansClustering {
 		int K = 5000;
 		int maxIters = 20;
 
-		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/10-per-digit_images_train"));
-		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/10-per-digit_labels_train"));
+		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/100-per-digit_images_train"));
+		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/100-per-digit_labels_train"));
 
 //		byte[][][] reducedImages = KMeansReduce(images, K, maxIters);
 //
@@ -38,6 +38,13 @@ public class KMeansClustering {
      */
 	public static byte[] encodeIDXimages(byte[][][] images) {
 
+		//TESTEE ET VALIDEE
+		//Test : diff testEncodeIDXImages 10-per-digit_images_train (commande Terminal)
+		//si retour sans message : VALIDE
+		//sinon message "Binary files [file1] and [file2] differ"
+
+		//afficher un fichier en binaire: xxd -b [filename]
+
 		//images structure:
 		// 0-3 : magic number 2051
 		// 4-7 : number of images
@@ -45,7 +52,7 @@ public class KMeansClustering {
 		// 12-15 : width of images
 		// 16-... : image by image, line by line, column by column
 
-		byte[] encodedImages = new byte[images.length + 16];
+		byte[] encodedImages = new byte[(images.length*images[0].length*images[0][0].length)+16];
 		int currentByte = 16;
 
 		encodeInt(2051, encodedImages, 0);
@@ -58,10 +65,13 @@ public class KMeansClustering {
 				for (int l = 0; l < images[0][0].length; ++l) {
 					//tabImages[k][j][l] = signedImages[k*largeurImages*hauteurImages+j*largeurImages+l];
 					byte unsignedByte = images[k][j][l];
-					encodedImages[currentByte] = (byte) ((unsignedByte & 0xFF) - 128);
+					encodedImages[16+(k*images[0].length*images[0][0].length+j*images[0][0].length+l)] = (byte) ((unsignedByte & 0xFF) - 128);
+					//System.out.println(k*images[0].length*images[0][0].length+j*images[0][0].length+l);
 				}
 			}
 		}
+
+		Helpers.writeBinaryFile("datasets/testEncodeIDXImages", encodedImages);
 
 		return encodedImages;
 	}
@@ -75,6 +85,13 @@ public class KMeansClustering {
      */
 	public static byte[] encodeIDXlabels(byte[] labels) {
 
+		//TESTEE ET VALIDEE
+		//Test : diff testEncodeIDXLabels 10-per-digit_labels_train (commande Terminal)
+		//si retour sans message : VALIDE
+		//sinon message "Binary files [file1] and [file2] differ"
+
+		//afficher un fichier en binaire: xxd -b [filename]
+
 		//labels structure :
 		// 0-3 : magic number 2049
 		// 4-7 : number of labels
@@ -87,9 +104,11 @@ public class KMeansClustering {
 
 		for (int i=8; i<labels.length+8; ++i) {
 			byte unsignedByte = labels[i-8];
-			byte signedByte = (byte) ((unsignedByte & 0xFF) - 128);
+			byte signedByte = (byte) ((unsignedByte & 0xFF));
 			encodedLabels[i] = signedByte;
 		}
+
+		Helpers.writeBinaryFile("datasets/testEncodeIDXLabels", encodedLabels);
 
 		return encodedLabels;
 	}
