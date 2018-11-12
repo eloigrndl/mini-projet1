@@ -47,6 +47,8 @@ public class KMeansClustering {
 		// 12-15 : width of images
 		// 16-... : image by image, line by line, column by column
 
+		assert images != null;
+
 		byte[] encodedImages = new byte[(images.length*images[0].length*images[0][0].length)+16];
 		int currentByte = 16;
 
@@ -66,7 +68,7 @@ public class KMeansClustering {
 			}
 		}
 
-		Helpers.writeBinaryFile("datasets/testEncodeIDXImages", encodedImages);
+		Helpers.writeBinaryFile("datasets/encodedIDXImages", encodedImages);
 
 		return encodedImages;
 	}
@@ -92,6 +94,8 @@ public class KMeansClustering {
 		// 4-7 : number of labels
 		// 8-... : labels
 
+		assert labels != null;
+
 		byte[] encodedLabels = new byte[labels.length + 8];
 
 		encodeInt(2049,encodedLabels,0);
@@ -103,7 +107,7 @@ public class KMeansClustering {
 			encodedLabels[i] = signedByte;
 		}
 
-		Helpers.writeBinaryFile("datasets/testEncodeIDXLabels", encodedLabels);
+		Helpers.writeBinaryFile("datasets/encodedIDXLabels", encodedLabels);
 
 		return encodedLabels;
 	}
@@ -118,6 +122,8 @@ public class KMeansClustering {
      * the others will follow at offset + 1, offset + 2, offset + 3
      */
 	public static void encodeInt(int n, byte[] destination, int offset) {
+
+		assert destination != null;
 
 		String integerByte = Integer.toBinaryString(n);
 		if(integerByte.length()!=32){
@@ -150,6 +156,8 @@ public class KMeansClustering {
      * @return the tensor containing the reduced dataset
      */
 	public static byte[][][] KMeansReduce(byte[][][] tensor, int size, int maxIters) {
+
+		assert tensor != null;
 
 		System.out.println("Starting KMeansReduce");
 
@@ -186,6 +194,10 @@ public class KMeansClustering {
      *  if j is at position i, then image i belongs to cluster j
      */
 	public static void recomputeAssignments(byte[][][] tensor, byte[][][] centroids, int[] assignments) {
+
+		assert tensor != null;
+		assert centroids != null;
+		assert assignments != null;
 
 		//chaque image appartient au cluster le plus proche (euclidean distance)
 
@@ -234,6 +246,10 @@ public class KMeansClustering {
      *  if j is at position i, then image i belongs to cluster j
      */
 	public static void initialize(byte[][][] tensor, int[] assignments, byte[][][] centroids) {
+
+		assert tensor != null;
+		assert assignments != null;
+		assert centroids != null;
 
 		System.out.println("Initialising...");
 

@@ -12,8 +12,8 @@ public class KNN {
 		int TESTS = 1000;
 		int K = 7;
 
-		byte[][][] trainImages = parseIDXimages(Helpers.readBinaryFile("datasets/100-per-digit_images_train"));
-		byte[] trainLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/100-per-digit_labels_train"));
+		byte[][][] trainImages = parseIDXimages(Helpers.readBinaryFile("datasets/1000-per-digit_images_train"));
+		byte[] trainLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/1000-per-digit_labels_train"));
 
 		byte[][][] testImages = parseIDXimages(Helpers.readBinaryFile("datasets/10k_images_test"));
 		byte[] testLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/10k_labels_test"));
@@ -28,6 +28,7 @@ public class KNN {
 		System.out.println("Accuracy = " + accuracy(predictions, Arrays.copyOfRange(testLabels, 0, TESTS))*100 + " %");
 		System.out.println("Time = " + time + " seconds");
 		System.out.println("Time per test image = " + (time / TESTS));
+
 
 		Helpers.show("Test", testImages, predictions, testLabels, 10, 10) ;
 	}
@@ -61,6 +62,8 @@ public class KNN {
 	 * @return A tensor of images
 	 */
 	public static byte[][][] parseIDXimages(byte[] data) {
+
+		assert data != null;
 
 		int nbMagic = extractInt(data[0], data[1], data[2], data[3]);
 		if (nbMagic != 2051) {
@@ -101,6 +104,9 @@ public class KNN {
 	 * @return the parsed labels
 	 */
 	public static byte[] parseIDXlabels(byte[] data) {
+
+		assert data != null;
+
 		int nombreMagique = extractInt(data[0], data[1], data[2], data[3]);
 
 		if (nombreMagique != 2049) {
@@ -129,6 +135,9 @@ public class KNN {
 	 */
 	public static float squaredEuclideanDistance(byte[][] a, byte[][] b) {
 
+		assert a != null;
+		assert b != null;
+
 		int hauteur = a.length; //nombre de lignes
 		int largeur = a[0].length; //nombre de colonnes
 
@@ -155,10 +164,9 @@ public class KNN {
 	 * @return the inverted similarity between the two images
 	 */
 	public static float invertedSimilarity(byte[][] a, byte[][] b) {
-		//On vérifie qu'on a des tenseurs équivalents
-		if (a.length != b.length && a[0].length != b[0].length) {
-			return 0;
-		}
+
+		assert a != null;
+		assert b!= null;
 
 		int hauteur = a.length;
 		int largeur = a[0].length;
@@ -188,6 +196,9 @@ public class KNN {
 	}
 	// méthode pour la valeur moyenne
 	public static double[] calculValeurMoyenne(byte[][] a, byte[][]b){
+
+		assert a != null;
+		assert b != null;
 
 		double valMoyenneA = 0;
 		double valMoyenneB = 0;
@@ -220,6 +231,8 @@ public class KNN {
 		//ex: values = {3, 7, 0, 9};
 		//indices = {0, 1, 2, 3};
 
+		assert values != null;
+
 		int[] indices = new int[values.length];
 
 		for (int i=0; i<values.length; ++i) {
@@ -241,6 +254,9 @@ public class KNN {
 	 *                to sort
 	 */
 	public static void quicksortIndices(float[] values, int[] indices, int low, int high) {
+
+		assert values != null;
+		assert indices != null;
 
 		int l = low;
 		int h = high;
@@ -280,6 +296,9 @@ public class KNN {
 		//values[i][j] => values[j][i]
 		//indices[i][j] => indices[j][i]
 
+		assert values != null;
+		assert indices != null;
+
 		float valuesTemp = values[i];
 		values[i] = values[j];
 		values[j] = valuesTemp;
@@ -298,6 +317,9 @@ public class KNN {
 	 * @return the index of the largest integer
 	 */
 	public static int indexOfMax(int[] array) {
+
+		assert array != null;
+
 	    int k = 0;
 		for(int i = 0; i<array.length;++i){
 		    if(k<array[i]){
@@ -317,7 +339,11 @@ public class KNN {
 	 * @return the winner of the election
 	 */
 	public static byte electLabel(int[] sortedIndices, byte[] labels, int k) {
-	    //On vérifie que l'indice k est inférieur ou égal à la taille du tableau d'indices
+
+		assert sortedIndices != null;
+		assert labels != null;
+
+		//On vérifie que l'indice k est inférieur ou égal à la taille du tableau d'indices
         if(k>sortedIndices.length){
             return 0; //Est-ce que peut retourner ca si c'est faux ?
         }
@@ -343,10 +369,14 @@ public class KNN {
 	 */
 	public static byte knnClassify(byte[][] image, byte[][][] trainImages, byte[] trainLabels, int k) {
 
+		assert image != null;
+		assert trainImages != null;
+		assert trainLabels != null;
+
 		float[] distances = new float[trainImages.length];
 
 		for (int i=0; i<trainImages.length; ++i) {
-			distances[i] = squaredEuclideanDistance(image, trainImages[i]);
+			distances[i] = invertedSimilarity(image, trainImages[i]);
 		}
 
 		return electLabel(quicksortIndices(distances), trainLabels, k);
@@ -361,6 +391,10 @@ public class KNN {
 	 * @return the accuracy of the predictions. Its value is in [0, 1]
 	 */
 	public static double accuracy(byte[] predictedLabels, byte[] trueLabels) {
+
+		assert predictedLabels != null;
+		assert trueLabels != null;
+
 		//on vérifie que les tableaux ne sont pas vides et qu'ils ont la même taille
 		/*if((predictedLabels.length!= trueLabels.length)||(predictedLabels.length = 0)||(trueLabels.length=0)){
             return 0;
