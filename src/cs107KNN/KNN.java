@@ -12,11 +12,13 @@ public class KNN {
 		int TESTS = 1000;
 		int K = 7;
 
-		byte[][][] trainImages = parseIDXimages(Helpers.readBinaryFile("datasets/1000-per-digit_images_train"));
-		byte[] trainLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/1000-per-digit_labels_train"));
+		byte[][][] trainImages = parseIDXImages(Helpers.readBinaryFile("datasets/100-per-digit_images_train"));
+		byte[] trainLabels = parseIDXLabels(Helpers.readBinaryFile("datasets/100-per-digit_labels_train"));
 
-		byte[][][] testImages = parseIDXimages(Helpers.readBinaryFile("datasets/10k_images_test"));
-		byte[] testLabels = parseIDXlabels(Helpers.readBinaryFile("datasets/10k_labels_test"));
+		byte[][][] testImages = parseIDXImages(Helpers.readBinaryFile("datasets/10k_images_test"));
+		byte[] testLabels = parseIDXLabels(Helpers.readBinaryFile("datasets/10k_labels_test"));
+
+		assert testImages != null && trainImages != null && testLabels != null;
 
 		byte[] predictions = new byte[TESTS];
 		long start = System.currentTimeMillis();
@@ -35,9 +37,7 @@ public class KNN {
 
 	/**
 	 * Composes four bytes into an integer using big endian convention.
-	 *
 	 * @param "bXToBY" The byte containing the bits to store between positions X and Y
-	 *
 	 * @return the integer having form [ b31ToB24 | b23ToB16 | b15ToB8 | b7ToB0 ]
 	 */
 	public static int extractInt(byte b31ToB24, byte b23ToB16, byte b15ToB8, byte b7ToB0) {
@@ -46,9 +46,9 @@ public class KNN {
 		
 		int sum = 0;
 		for (int i= bits.length()-1; i>=0;--i){
-			int puissance = bits.length()-i-1;
-			int valBinaire = (int)bits.charAt(i) - 48;
-			sum+=valBinaire*(Math.pow(2,puissance));
+			int power = bits.length()-i-1;
+			int binaryVal = (int)bits.charAt(i) - 48;
+			sum+= binaryVal * (Math.pow(2, power));
 
 		}
 		return sum;
@@ -56,81 +56,71 @@ public class KNN {
 
 	/**
 	 * Parses an IDX file containing images
-	 *
 	 * @param data the binary content of the file
-	 *
 	 * @return A tensor of images
 	 */
-	public static byte[][][] parseIDXimages(byte[] data) {
+	public static byte[][][] parseIDXImages(byte[] data) {
 
 		assert data != null;
-
 		int nbMagic = extractInt(data[0], data[1], data[2], data[3]);
 		if (nbMagic != 2051) {
 			return null;
 		}
-		//récupère nombre d'images/hauteur/largeur
+
+		//Get the number of images as well as their height and width
 		int nbImages = extractInt(data[4], data[5], data[6], data[7]);
-		int hauteurImages = extractInt(data[8], data[9], data[10], data[11]);
-		int largeurImages = extractInt(data[12], data[13], data[14], data[15]);
+		int imageHeight = extractInt(data[8], data[9], data[10], data[11]);
+		int imageWidth = extractInt(data[12], data[13], data[14], data[15]);
 
-
-		//passe de bytes non-signés à signés
-		byte[][][] tabImages = new byte[nbImages][hauteurImages][largeurImages];
-		int nbpixels = nbImages * hauteurImages * largeurImages;
-		byte []signedImages = new byte[nbpixels];
-		for (int i = 16; i <16+nbpixels; ++i) {
+		//Convert unsigned bytes to signed bytes
+		byte[][][] imageTab = new byte[nbImages][imageHeight][imageWidth];
+		int pxlNumber = nbImages * imageHeight * imageWidth;
+		byte []signedImages = new byte[pxlNumber];
+		for (int i = 16; i < 16 + pxlNumber; ++i) {
 			byte unsignedImage = data[i];
 			byte signedImage = (byte) ((unsignedImage & 0xFF) - 128);
 			signedImages[i-16] = signedImage;
 		}
 
-		//transfère bytes signés dans tensor d'images
+		//Put signed bytes in image tensor
 		for (int k = 0; k < nbImages; ++k) {
-			for (int j = 0; j < hauteurImages; ++j) {
-				for (int l = 0; l < largeurImages; ++l) {
-					tabImages[k][j][l] = signedImages[k*largeurImages*hauteurImages+j*largeurImages+l];
+			for (int j = 0; j < imageHeight; ++j) {
+				for (int l = 0; l < imageWidth; ++l) {
+					imageTab[k][j][l] = signedImages[k * imageWidth * imageHeight + j * imageWidth + l];
 				}
 			}
 		}
-		return tabImages;
+		return imageTab;
 	}
 
 	/**
 	 * Parses an idx images containing labels
-	 *
 	 * @param data the binary content of the file
-	 *
 	 * @return the parsed labels
 	 */
-	public static byte[] parseIDXlabels(byte[] data) {
+	public static byte[] parseIDXLabels(byte[] data) {
 
 		assert data != null;
-
-		int nombreMagique = extractInt(data[0], data[1], data[2], data[3]);
-
-		if (nombreMagique != 2049) {
+		int magicNumber = extractInt(data[0], data[1], data[2], data[3]);
+		if (magicNumber != 2049) {
 		    return null;
         }
 
-        int nombreEtiquettes = extractInt(data[4], data[5], data[6], data[7]);
+        int labelNumber = extractInt(data[4], data[5], data[6], data[7]);
+		byte[] labels = new byte[labelNumber];
 
-		byte[] etiquettes = new byte[nombreEtiquettes];
-        for (int i=8; i<8+nombreEtiquettes; ++i) {
-            byte unsignedEtiquette = data[i];
-            byte intEtiquette = (byte) ((unsignedEtiquette & 0xFF));
+        for (int i = 8; i < 8 + labelNumber; ++i) {
+            byte unsignedLabel = data[i];
+            byte intLabel = (byte) ((unsignedLabel & 0xFF));
 
-            etiquettes[i-8] = intEtiquette;
+			labels[i-8] = intLabel;
         }
-
-		return etiquettes;
+		return labels;
 	}
 
 	/**
-	 * @brief Computes the squared L2 distance of two images
-	 *
+	 * Computes the squared L2 distance of two images
 	 * @param a, b two images of same dimensions
-	 *
 	 * @return the squared euclidean distance between the two images
 	 */
 	public static float squaredEuclideanDistance(byte[][] a, byte[][] b) {
@@ -138,13 +128,13 @@ public class KNN {
 		assert a != null;
 		assert b != null;
 
-		int hauteur = a.length; //nombre de lignes
-		int largeur = a[0].length; //nombre de colonnes
+		int height = a.length;
+		int width = a[0].length;
 
 		float e = 0;
 
-		for (int i=0; i<hauteur; ++i) {
-			for (int j=0; j<largeur; ++j) {
+		for (int i = 0; i < height; ++i) {
+			for (int j = 0; j < width; ++j) {
 
 				float aij = a[i][j];
 				float bij = b[i][j];
@@ -152,15 +142,13 @@ public class KNN {
 				e += Math.pow((aij - bij), 2);
 			}
 		}
-
 		return e;
 	}
 
 	/**
-	 * @brief Computes the inverted similarity between 2 images.
-	 *
+	 * Computes the inverted similarity between 2 images.
 	 * @param a, b two images of same dimensions
-	 *
+
 	 * @return the inverted similarity between the two images
 	 */
 	public static float invertedSimilarity(byte[][] a, byte[][] b) {
@@ -168,63 +156,60 @@ public class KNN {
 		assert a != null;
 		assert b!= null;
 
-		int hauteur = a.length;
-		int largeur = a[0].length;
+		int height = a.length;
+		int width = a[0].length;
 
-		//Calcul du numérateur
-		float numerateur = 0;
-		float membre1 = 0;
-		float membre2 = 0;
+		//Computation of numerator
+		float numerator = 0;
+		float term1 = 0;
+		float term2 = 0;
 
-		double[] valMoyenne = calculValeurMoyenne(a, b);
+		double[] averageVal = averageValCalc(a, b);
 
-		for (int i = 0; i < hauteur-1; ++i){
-			for (int j = 0; j < largeur - 1; ++j){
-				numerateur += (a[i][j] - valMoyenne[0])*(b[i][j] - valMoyenne[1]);
-				membre1 += (a[i][j] - valMoyenne[0])*(a[i][j] - valMoyenne[0]);
-				membre2 += (b[i][j] - valMoyenne[1])*(b[i][j] - valMoyenne[1]);
+		for (int i = 0; i < height-1; ++i){
+			for (int j = 0; j < width - 1; ++j){
+				numerator += (a[i][j] - averageVal[0]) * (b[i][j] - averageVal[1]);
+				term1 += (a[i][j] - averageVal[0]) * (a[i][j] - averageVal[0]);
+				term2 += (b[i][j] - averageVal[1]) * (b[i][j] - averageVal[1]);
 			}
 		}
-		float denominateur = (float) Math.sqrt((membre1*membre2));
 
-		if(denominateur==0){
-			denominateur = (float) 2.0;
+		float denominator = (float) Math.sqrt((term1 * term2));
+		if(denominator==0){
+			denominator = (float) 2.0;
 		}
 
-		//Calcul final Similarité inversée
-		return 1-(numerateur/denominateur);
+		//Computation of inverted similarity
+		return 1 - (numerator / denominator);
 	}
-	// méthode pour la valeur moyenne
-	public static double[] calculValeurMoyenne(byte[][] a, byte[][]b){
+
+	//Helper method to compute average value
+	public static double[] averageValCalc(byte[][] a, byte[][]b){
 
 		assert a != null;
 		assert b != null;
 
-		double valMoyenneA = 0;
-		double valMoyenneB = 0;
-		double  hauteur = a.length;
-		double largeur = a[0].length;
-		for(int i =0; i<hauteur-1;++i){
-			for(int j = 0; j<largeur-1;++j){
-				valMoyenneA +=a[i][j];
-				valMoyenneB +=b[i][j];
+		double avgValA = 0;
+		double avgValB = 0;
+		double  height = a.length;
+		double width = a[0].length;
+		for(int i =0; i<height-1;++i){
+			for(int j = 0; j<width-1;++j){
+				avgValA +=a[i][j];
+				avgValB +=b[i][j];
 			}
 		}
-		valMoyenneA = valMoyenneA/(hauteur*largeur);
-		valMoyenneB = valMoyenneB/(hauteur*largeur);
+		avgValA = avgValA / (height * width);
+		avgValB = avgValB / (height * width);
 
 
-		return new double[] {valMoyenneA, valMoyenneB};
+		return new double[] {avgValA, avgValB};
 	}
 
 	/**
-	 * @brief Quicksorts and returns the new indices of each value.
-	 *
-	 * @param values the values whose indices have to be sorted in non decreasing
-	 *               order
-	 *
+	 * Quick-sorts and returns the new indices of each value.
+	 * @param values the values whose indices have to be sorted in non decreasing order
 	 * @return the array of sorted indices
-	 *
 	 *         Example: values = quicksortIndices([3, 7, 0, 9]) gives [2, 0, 1, 3]
 	 */
 	public static int[] quicksortIndices(float[] values) {
@@ -234,20 +219,17 @@ public class KNN {
 		assert values != null;
 
 		int[] indices = new int[values.length];
-
-		for (int i=0; i<values.length; ++i) {
+		for (int i = 0; i < values.length; ++i) {
 			indices[i] = i;
 		}
 
 		quicksortIndices(values, indices, 0, (values.length-1));
-
 		return indices;
 	}
 
 	/**
-	 * @brief Sorts the provided values between two indices while applying the same
+	 * Sorts the provided values between two indices while applying the same
 	 *        transformations to the array of indices
-	 *
 	 * @param values  the values to sort
 	 * @param indices the indices to sort according to the corresponding values
 	 * @param         low, high are the **inclusive** bounds of the portion of array
@@ -285,8 +267,7 @@ public class KNN {
 	}
 
 	/**
-	 * @brief Swaps the elements of the given arrays at the provided positions
-	 *
+	 * Swaps the elements of the given arrays at the provided positions
 	 * @param         i, j the indices of the elements to swap
 	 * @param values  the array floats whose values are to be swapped
 	 * @param indices the array of ints whose values are to be swapped
@@ -310,10 +291,8 @@ public class KNN {
 	}
 
 	/**
-	 * @brief Returns the index of the largest element in the array
-	 *
+	 * Returns the index of the largest element in the array
 	 * @param array an array of integers
-	 *
 	 * @return the index of the largest integer
 	 */
 	public static int indexOfMax(int[] array) {
@@ -321,9 +300,9 @@ public class KNN {
 		assert array != null;
 
 	    int k = 0;
-		for(int i = 0; i<array.length;++i){
+		for(int i = 0; i < array.length;++i){
 		    if(k<array[i]){
-		        k=i;
+		        k = i;
             }
         }
 		return k;
@@ -331,11 +310,9 @@ public class KNN {
 
 	/**
 	 * The k first elements of the provided array vote for a label
-	 *
 	 * @param sortedIndices the indices sorted by non-decreasing distance
 	 * @param labels        the labels corresponding to the indices
 	 * @param k             the number of labels asked to vote
-	 *
 	 * @return the winner of the election
 	 */
 	public static byte electLabel(int[] sortedIndices, byte[] labels, int k) {
@@ -343,9 +320,9 @@ public class KNN {
 		assert sortedIndices != null;
 		assert labels != null;
 
-		//On vérifie que l'indice k est inférieur ou égal à la taille du tableau d'indices
-        if(k>sortedIndices.length){
-            return 0; //Est-ce que peut retourner ca si c'est faux ?
+		//Verification of the bounds of the array
+        if(k > sortedIndices.length){
+            throw new IllegalArgumentException();
         }
 
 	    int[] tab = new int[10];
@@ -353,18 +330,15 @@ public class KNN {
             int j = labels[sortedIndices[i]];
             tab[j]+=1;
         }
-        byte winnerOfElection = (byte) indexOfMax(tab);
-        return winnerOfElection;
+        return (byte) indexOfMax(tab);
 	}
 
 	/**
 	 * Classifies the symbol drawn on the provided image
-	 *
 	 * @param image       the image to classify
 	 * @param trainImages the tensor of training images
 	 * @param trainLabels the list of labels corresponding to the training images
 	 * @param k           the number of voters in the election process
-	 *
 	 * @return the label of the image
 	 */
 	public static byte knnClassify(byte[][] image, byte[][][] trainImages, byte[] trainLabels, int k) {
@@ -375,19 +349,16 @@ public class KNN {
 
 		float[] distances = new float[trainImages.length];
 
-		for (int i=0; i<trainImages.length; ++i) {
+		for (int i = 0; i < trainImages.length; ++i) {
 			distances[i] = invertedSimilarity(image, trainImages[i]);
 		}
-
 		return electLabel(quicksortIndices(distances), trainLabels, k);
 	}
 
 	/**
 	 * Computes accuracy between two arrays of predictions
-	 *
 	 * @param predictedLabels the array of labels predicted by the algorithm
 	 * @param trueLabels      the array of true labels
-	 *
 	 * @return the accuracy of the predictions. Its value is in [0, 1]
 	 */
 	public static double accuracy(byte[] predictedLabels, byte[] trueLabels) {
@@ -395,11 +366,11 @@ public class KNN {
 		assert predictedLabels != null;
 		assert trueLabels != null;
 
-		//on vérifie que les tableaux ne sont pas vides et qu'ils ont la même taille
-		/*if((predictedLabels.length!= trueLabels.length)||(predictedLabels.length = 0)||(trueLabels.length=0)){
-            return 0;
-        }*/
-		//on calcule la précision
+		//
+		if(predictedLabels.length != trueLabels.length || predictedLabels.length == 0){
+            throw new IllegalArgumentException();
+        }
+
 		double accuracy = 0;
 		for(int i = 0; i<trueLabels.length;++i){
 			if(predictedLabels[i]==trueLabels[i]){

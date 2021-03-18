@@ -4,8 +4,8 @@ class SignatureChecks {
 
     byte t = 0;
     int extractIntRes = KNN.extractInt(t, t, t, t);
-	byte[][][] parseIDXimagesRes = KNN.parseIDXimages(new byte [] {});
-	byte[] parseIDXlabelsRes = KNN.parseIDXlabels(new byte [] {});
+	byte[][][] parseIDXImagesRes = KNN.parseIDXImages(new byte [] {});
+	byte[] parseIDXLabelsRes = KNN.parseIDXLabels(new byte [] {});
 	float squaredEuclideanDistance = KNN.squaredEuclideanDistance(new byte[][] {}, new byte[][] {});
     float invertedSimilarity = KNN.invertedSimilarity(new byte[][] {}, new byte[][] {});
     int[] quicksortIndicesRes = KNN.quicksortIndices(new float[] {});
@@ -21,7 +21,7 @@ class SignatureChecks {
         KMeansClustering.recomputeCentroids(new byte[][][] {}, new byte[][][] {}, new int[] {});
     }
 
-    byte[] encodeIDXimagesRes = KMeansClustering.encodeIDXimages(new byte[][][] {});
-    byte[] encodeIDXlabelsRes = KMeansClustering.encodeIDXlabels(new byte[] {});
-    byte[][][] KMeanseReduceRes = KMeansClustering.KMeansReduce(new byte[][][] {}, 0, 0);
+    byte[] encodeIDXImagesRes = KMeansClustering.encodeIDXImages(new byte[][][] {});
+    byte[] encodeIDXLabelsRes = KMeansClustering.encodeIDXLabels(new byte[] {});
+    byte[][][] KMeansReduceRes = KMeansClustering.KMeansReduce(new byte[][][] {}, 0, 0);
 }

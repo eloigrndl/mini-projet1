@@ -1,18 +1,18 @@
 package cs107KNN;
 
-//import com.sun.tools.corba.se.idl.toJavaPortable.Helper;
-
 import java.util.*;
 
 public class KMeansClustering {
 	public static void main(String[] args) {
 		int K = 5000;
-		int maxIters = 20;
+		int maxIter = 20;
 
-		byte[][][] images = KNN.parseIDXimages(Helpers.readBinaryFile("datasets/100-per-digit_images_train"));
-		byte[] labels = KNN.parseIDXlabels(Helpers.readBinaryFile("datasets/100-per-digit_labels_train"));
+		byte[][][] images = KNN.parseIDXImages(Helpers.readBinaryFile("datasets/100-per-digit_images_train"));
+		byte[] labels = KNN.parseIDXLabels(Helpers.readBinaryFile("datasets/100-per-digit_labels_train"));
 
-		byte[][][] reducedImages = KMeansReduce(images, K, maxIters);
+		assert(images != null && labels != null);
+
+		byte[][][] reducedImages = KMeansReduce(images, K, maxIter);
 //
 //		byte[] reducedLabels = new byte[reducedImages.length];
 //		for (int i = 0; i < reducedLabels.length; i++) {
@@ -31,21 +31,7 @@ public class KMeansClustering {
      * 
      * @return the array of byte ready to be written to an IDX file
      */
-	public static byte[] encodeIDXimages(byte[][][] images) {
-
-		//TESTEE ET VALIDEE
-		//Test : diff testEncodeIDXImages 10-per-digit_images_train (commande Terminal)
-		//si retour sans message : VALIDE
-		//sinon message "Binary files [file1] and [file2] differ"
-
-		//afficher un fichier en binaire: xxd -b [filename]
-
-		//images structure:
-		// 0-3 : magic number 2051
-		// 4-7 : number of images
-		// 8-11 : height of images
-		// 12-15 : width of images
-		// 16-... : image by image, line by line, column by column
+	public static byte[] encodeIDXImages(byte[][][] images) {
 
 		assert images != null;
 
@@ -60,7 +46,7 @@ public class KMeansClustering {
 		for (int k = 0; k < images.length; ++k) {
 			for (int j = 0; j < images[0].length; ++j) {
 				for (int l = 0; l < images[0][0].length; ++l) {
-					//tabImages[k][j][l] = signedImages[k*largeurImages*hauteurImages+j*largeurImages+l];
+					//images[k][j][l] = signedImages[k*largeurImages*hauteurImages+j*largeurImages+l];
 					byte unsignedByte = images[k][j][l];
 					encodedImages[16+(k*images[0].length*images[0][0].length+j*images[0][0].length+l)] = (byte) ((unsignedByte & 0xFF) - 128);
 					//System.out.println(k*images[0].length*images[0][0].length+j*images[0][0].length+l);
@@ -69,30 +55,17 @@ public class KMeansClustering {
 		}
 
 		Helpers.writeBinaryFile("datasets/encodedIDXImages", encodedImages);
-
 		return encodedImages;
 	}
 
     /**
-     * @brief Prepares the array of labels to be written on a binary file
+     * Prepares the array of labels to be written on a binary file
      * 
      * @param labels the array of labels to encode
      * 
      * @return the array of bytes ready to be written to an IDX file
      */
-	public static byte[] encodeIDXlabels(byte[] labels) {
-
-		//TESTEE ET VALIDEE
-		//Test : diff testEncodeIDXLabels 10-per-digit_labels_train (commande Terminal)
-		//si retour sans message : VALIDE
-		//sinon message "Binary files [file1] and [file2] differ"
-
-		//afficher un fichier en binaire: xxd -b [filename]
-
-		//labels structure :
-		// 0-3 : magic number 2049
-		// 4-7 : number of labels
-		// 8-... : labels
+	public static byte[] encodeIDXLabels(byte[] labels) {
 
 		assert labels != null;
 
@@ -113,7 +86,7 @@ public class KMeansClustering {
 	}
 
     /**
-     * @brief Decomposes an integer into 4 bytes stored consecutively in the destination
+     * Decomposes an integer into 4 bytes stored consecutively in the destination
      * array starting at position offset
      * 
      * @param n the integer number to encode
@@ -127,8 +100,8 @@ public class KMeansClustering {
 
 		String integerByte = Integer.toBinaryString(n);
 		if(integerByte.length()!=32){
-			int nbAAjouter = 32 - integerByte.length();
-			for (int i = 0; i<nbAAjouter; ++i){
+			int nbToAdd = 32 - integerByte.length();
+			for (int i = 0; i < nbToAdd; ++i){
 				integerByte ='0' + integerByte;
 			}
 		}
@@ -137,25 +110,23 @@ public class KMeansClustering {
 			String byte8 = "";
 
 			for (int i = 0; i < 8; ++i) {
-				byte8 = byte8 + integerByte.charAt(j * 8 + i);
+				byte8 += integerByte.charAt(j * 8 + i);
 			}
-
 			destination[offset+j] = Helpers.binaryStringToByte(byte8);
-
 		}
 
 	}
 
     /**
-     * @brief Runs the KMeans algorithm on the provided tensor to return size elements.
+     * Runs the KMeans algorithm on the provided tensor to return size elements.
      * 
      * @param tensor the tensor of images to reduce
      * @param size the number of images in the reduced dataset
-     * @param maxIters the number of iterations of the KMeans algorithm to perform
+     * @param maxIter the number of iterations of the KMeans algorithm to perform
      * 
      * @return the tensor containing the reduced dataset
      */
-	public static byte[][][] KMeansReduce(byte[][][] tensor, int size, int maxIters) {
+	public static byte[][][] KMeansReduce(byte[][][] tensor, int size, int maxIter) {
 
 		assert tensor != null;
 
@@ -166,9 +137,9 @@ public class KMeansClustering {
 		initialize(tensor, assignments, centroids);
 
 		int nIter = 0;
-		while (nIter < maxIters) {
+		while (nIter < maxIter) {
 
-			System.out.println("Itering - Current : " + nIter);
+			System.out.println("Iterating - Current : " + nIter);
 			// Step 1: Assign points to closest centroid
 			recomputeAssignments(tensor, centroids, assignments);
 			System.out.println("Recomputed assignments");
@@ -176,7 +147,7 @@ public class KMeansClustering {
 			//recomputeCentroids(tensor, centroids, assignments);
 			//System.out.println("Recomputed centroids");
 
-			System.out.println("KMeans completed iteration " + (nIter + 1) + " / " + maxIters);
+			System.out.println("KMeans completed iteration " + (nIter + 1) + " / " + maxIter);
 
 			nIter++;
 		}
@@ -185,9 +156,7 @@ public class KMeansClustering {
 	}
 
    /**
-     * @brief Assigns each image to the cluster whose centroid is the closest.
-     * It modifies.
-     * 
+	 * Assigns each image to the cluster whose centroid is the closest.
      * @param tensor the tensor of images to cluster
      * @param centroids the tensor of centroids that represent the cluster of images
      * @param assignments the vector indicating to what cluster each image belongs to.
@@ -199,13 +168,12 @@ public class KMeansClustering {
 		assert centroids != null;
 		assert assignments != null;
 
-		//chaque image appartient au cluster le plus proche (euclidean distance)
-
-		for (int i=0; i<tensor.length; ++i) {
+		for (int i = 0; i < tensor.length; ++i) {
 			byte[][] currentImage = tensor[i];
 
 			float smallestDistance = KNN.squaredEuclideanDistance(currentImage, centroids[0]);
 			int currentCentroid = 0;
+
 			//Compare current image to all the centroids
 			for (int j=1; j<centroids.length; ++j) {
 
@@ -225,8 +193,7 @@ public class KMeansClustering {
 	}
 
     /**
-     * @brief Computes the centroid of each cluster by averaging the images in the cluster
-     * 
+     * Computes the centroid of each cluster by averaging the images in the cluster
      * @param tensor the tensor of images to cluster
      * @param centroids the tensor of centroids that represent the cluster of images
      * @param assignments the vector indicating to what cluster each image belongs to.
@@ -239,7 +206,6 @@ public class KMeansClustering {
      * Initializes the centroids and assignments for the algorithm.
      * The assignments are initialized randomly and the centroids
      * are initialized by randomly choosing images in the tensor.
-     * 
      * @param tensor the tensor of images to cluster
      * @param assignments the vector indicating to what cluster each image belongs to.
      * @param centroids the tensor of centroids that represent the cluster of images
@@ -257,11 +223,11 @@ public class KMeansClustering {
 		Random r = new Random("cs107-2018".hashCode());
 		while (centroidIds.size() != centroids.length)
 			centroidIds.add(r.nextInt(tensor.length));
-		Integer[] cids = centroidIds.toArray(new Integer[] {});
+		Integer[] centroidArray = centroidIds.toArray(new Integer[] {});
 		for (int i = 0; i < centroids.length; i++)
-			centroids[i] = tensor[cids[i]];
+			centroids[i] = tensor[centroidArray[i]];
 		for (int i = 0; i < assignments.length; i++)
-			assignments[i] = cids[r.nextInt(cids.length)];
+			assignments[i] = centroidArray[r.nextInt(centroidArray.length)];
 
 		System.out.println("Initialised.");
 	}

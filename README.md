@@ -1,44 +1,10 @@
-# cs107-miniprojet1
-Mini-Projet 1
+# EPFL CS107 - Mini-Projet #1
 
-## Github
+First mini-project during first year @ EPFL (CS_107 course) : HandWriting Recognition
 
-### Comment ça fonctionne
+Eloi GARANDEL / Antoine BELLANGER
 
-1. Modifications dans le code
-2. Ajouter les modifications à un "commit" (une nouvelle build).
-3. Créer le commit en lui donnant un nom.
-4. "Push" le commit contenant le nouveau code sur Github.
+The goal of this project is to implement a program capable of recognizing handwritten digits. It was done using the K-Nearest Neighbors algorithm paired with a pre-classified dataset of digits.
 
-### Les branches
-
-Branche principale : `master`
-
-On développe sur des branches parallèles qui quand on les `merge` rejoignent la `master`.
-
-### Commandes Github
-
-- Voir le statut du code en cours 
-
-`git status`
-
-- Se mettre sur une branche
-
-`git checkout [nom de la branche]`
-
-- Ajouter le code au commit en cours
-
-`git add .`
-
-- Créer un nouveau commit
-
-`git commit -m [quoi de neuf ?]`
-
-- Push sur Github
-
-`git push -u origin [branch]`
-
-- Pull depuis Github la dernière version
-
-`git pull origin [branch]`
-
+- knn.pdf is the assignment pdf
+- The src folder contains all code files (KNN is the main program and KNNClustering the bonus part of the assignment) 
