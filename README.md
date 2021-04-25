@@ -1,6 +1,6 @@
 # EPFL CS107 - Mini-Projet #1
 
-First mini-project during first year @ EPFL (CS_107 course) : HandWriting Recognition
+First mini-project during first year @ EPFL ([CS_107 course](https://edu.epfl.ch/coursebook/en/introduction-to-programming-CS-107)) : HandWriting Recognition
 
 Eloi GARANDEL / Antoine BELLANGER
 
